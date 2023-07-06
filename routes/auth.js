@@ -119,11 +119,11 @@ router.post('/fetchall', fetchuser, async (req, res) => {
     let allusers;
     try {
         if (req.user.role == "admin") {
-            allusers = await User.find({ role: "student" });
+            allusers = await User.find({ role: "student" }).select('-password');
         }
 
         else if (req.user.role == "superadmin") {
-            allusers = await User.find({ role: { $in: ["admin", "student"] } });
+            allusers = await User.find({ role: { $in: ["admin", "student"] } }).select('-password');
         }
         res.send(allusers);
     } catch (error) {
