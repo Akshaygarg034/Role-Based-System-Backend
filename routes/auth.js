@@ -45,7 +45,7 @@ router.post('/createuser', [
             });
     }
 
-    else{
+    else {
         return res.status(400).json({ success, error: "Please Use only Company's email ID" });
     }
 })
@@ -79,6 +79,7 @@ router.post('/login', [
         const data = {
             user: {
                 id: user.id,
+                name: user.name,
                 role: user.role
             }
         }
@@ -103,4 +104,32 @@ router.post('/getuser', fetchuser, async (req, res) => {
         res.status(500).send('Internal server error');
     }
 })
+
+router.post('/getrole', fetchuser, async (req, res) => {
+    try {
+        res.send(req.user.role);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Internal server error');
+    }
+})
+
+router.post('/fetchall', fetchuser, async (req, res) => {
+    if (req.user.role == "student") return res.status(404).json({ error: 'Students are not allowed' })
+    let allusers;
+    try {
+        if (req.user.role == "admin") {
+            allusers = await User.find({ role: "student" });
+        }
+
+        else if (req.user.role == "superadmin") {
+            allusers = await User.find({ role: { $in: ["admin", "student"] } });
+        }
+        res.send(allusers);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Internal server error');
+    }
+})
+
 module.exports = router
