@@ -132,4 +132,44 @@ router.post('/fetchall', fetchuser, async (req, res) => {
     }
 })
 
+router.delete('/deleteuser/:id', fetchuser, async (req, res) => {
+    try {
+        let user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).send('Not Found')
+        }
+        // Checks if the note User is same as the User of the token
+        if (req.user.role == "superadmin") {
+            user = await User.findByIdAndDelete(req.params.id);
+            res.json({
+                Success: "User has been deleted",
+                user: user
+            })
+        }
+
+        else if (req.user.role == "admin") {
+            user = await User.findById(req.params.id);
+
+            if (user.role != "superadmin" && user.role != "admin") {
+                user = await User.findByIdAndDelete(req.params.id);
+                res.json({
+                    Success: "User has been deleted",
+                    user: user
+                })
+            }
+            else{
+                return res.status(401).send('Admins are Not Allowed to do this')
+            }
+        }
+
+        else {
+            return res.status(401).send('Students are Not Allowed to do this')
+        }
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Internal server error');
+    }
+})
+
 module.exports = router
