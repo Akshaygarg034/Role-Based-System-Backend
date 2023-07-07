@@ -34,6 +34,26 @@ router.get('/fetchusernotes', fetchuser, async (req, res) => {
 
 })
 
+// Fetch Notes by ID
+router.post('/fetchnotesbyid/:id', fetchuser, async (req, res) => {
+    try {
+        const notes = await Note.find({ user: req.params.id });
+        if (!notes) {
+            return res.status(404).send('Not Found')
+        }
+        // Checks if the note User is same as the User of the token
+        if (req.user.role == "admin" || req.user.role == "superadmin"){
+            res.send(notes);
+        }
+        else{
+            return res.status(401).send('Other Students are Not Allowed')
+        }
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Internal server error');
+    }
+})
+
 // Only student is allowed
 router.post('/addnote', fetchuser, [
     body('title', 'title must be minimum of 3 characters').isLength({ min: 3 }),
