@@ -46,7 +46,7 @@ router.post('/createuser', [
     }
 
     else {
-        return res.status(400).json({ success, error: "Please Use only Company's email ID" });
+        return res.status(400).json({ success, error: "Please Use only Company's email ID. i.e email ID's ends with @student.in, @admin.in or @superadmin.in" });
     }
 })
 
