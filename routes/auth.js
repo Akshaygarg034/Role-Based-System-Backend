@@ -32,7 +32,7 @@ router.post('/createuser', [
     // Getting role from email ID
     const Role = req.body.email.slice(req.body.email.indexOf("@") + 1, req.body.email.indexOf("."));
 
-    if (Role == "student" || Role == "admin" || Role == "superadmin") {
+    if (Role == "user" || Role == "admin" || Role == "superadmin") {
         // Creating a User and Adding its Data in the Database
         await User.create({
             name: req.body.name,
@@ -46,7 +46,7 @@ router.post('/createuser', [
     }
 
     else {
-        return res.status(400).json({ success, error: "Please Use only Company's email ID. i.e email ID's ends with @student.in, @admin.in or @superadmin.in" });
+        return res.status(400).json({ success, error: "Please Use only Company's email ID's. i.e email ID's ends with @user.in, @admin.in or @superadmin.in" });
     }
 })
 
@@ -115,15 +115,15 @@ router.post('/getrole', fetchuser, async (req, res) => {
 })
 
 router.post('/fetchall', fetchuser, async (req, res) => {
-    if (req.user.role == "student") return res.status(404).json({ error: 'Students are not allowed' })
+    if (req.user.role == "user") return res.status(404).json({ error: 'Students are not allowed' })
     let allusers;
     try {
         if (req.user.role == "admin") {
-            allusers = await User.find({ role: "student" }).select('-password');
+            allusers = await User.find({ role: "user" }).select('-password');
         }
 
         else if (req.user.role == "superadmin") {
-            allusers = await User.find({ role: { $in: ["admin", "student"] } }).select('-password');
+            allusers = await User.find({ role: { $in: ["admin", "user"] } }).select('-password');
         }
         res.send(allusers);
     } catch (error) {
@@ -164,7 +164,7 @@ router.delete('/deleteuser/:id', fetchuser, async (req, res) => {
         }
 
         else {
-            return res.status(401).send('Students are Not Allowed to do this')
+            return res.status(401).send('Users are Not Allowed to do this')
         }
     } catch (error) {
         console.error(error.message);

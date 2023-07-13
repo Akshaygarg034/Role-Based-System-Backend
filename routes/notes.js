@@ -12,7 +12,7 @@ router.post('/fetchallnotes', fetchuser, async (req, res) => {
             res.send(notes);
         }
         else {
-            return res.status(404).json({ error: 'Students are not allowed' })
+            return res.status(404).json({ error: 'Users are not allowed' })
         }
 
     } catch (error) {
@@ -39,14 +39,14 @@ router.post('/fetchnotesbyid/:id', fetchuser, async (req, res) => {
     try {
         const notes = await Note.find({ user: req.params.id });
         if (!notes) {
-            return res.status(404).send('Not Found')
+            return res.status(404).send('Notes Not Found')
         }
         // Checks if the note User is same as the User of the token
         if (req.user.role == "admin" || req.user.role == "superadmin"){
             res.send(notes);
         }
         else{
-            return res.status(401).send('Other Students are Not Allowed')
+            return res.status(401).send('Other Users are Not Allowed')
         }
     } catch (error) {
         console.error(error.message);
@@ -88,7 +88,7 @@ router.put('/updatenote/:id', fetchuser, async (req, res) => {
 
         let note = await Note.findById(req.params.id);
         if (!note) {
-            return res.status(404).send('Not Found')
+            return res.status(404).send('Note Not Found')
         }
         // Checks if the note User is same as the User of the token || user of token is admin || superadmin
         if (req.user.role == "admin" || req.user.role == "superadmin") {
@@ -96,7 +96,7 @@ router.put('/updatenote/:id', fetchuser, async (req, res) => {
             res.json(note)
         }
         else {
-            return res.status(401).send('Other Students are not allowed to do this.')
+            return res.status(401).send('Users are not allowed to do this.')
         }
     } catch (error) {
         console.error(error.message);
@@ -109,7 +109,7 @@ router.delete('/deletenote/:id', fetchuser, async (req, res) => {
     try {
         let note = await Note.findById(req.params.id);
         if (!note) {
-            return res.status(404).send('Not Found')
+            return res.status(404).send('Note Not Found')
         }
         // Checks if the note User is same as the User of the token
         if (req.user.role == "admin" || req.user.role == "superadmin") {
@@ -120,7 +120,7 @@ router.delete('/deletenote/:id', fetchuser, async (req, res) => {
             })
         }
         else{
-            return res.status(401).send('Students are Not Allowed')
+            return res.status(401).send('Users are Not Allowed')
         }
     } catch (error) {
         console.error(error.message);
