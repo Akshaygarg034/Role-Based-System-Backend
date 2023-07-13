@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const fetchuser = require('../middlewares/fetchuser')
 
-router.post('/createuser', [
+router.post('/createuser', [ 
     body('email', 'Enter a valid email').isEmail(),
     body('name', 'name must be minimum of 3 characters').isLength({ min: 3 }),
     body('password', 'password must be minimum of 5 characters').isLength({ min: 5 })
